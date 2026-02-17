@@ -40,6 +40,9 @@
   "keywords": [],
   "author": "",
   "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "packageManager": "pnpm@10.7.0",
   "peerDependencies": {
     "react": "^19.0.0"
