@@ -1,43 +1,71 @@
-# @optimizely/cms-sdk
+# @kunalshetye/cms-sdk
 
-[![npm version](https://img.shields.io/npm/v/@optimizely/cms-sdk)](https://www.npmjs.com/package/@optimizely/cms-sdk)
+[![npm version](https://img.shields.io/npm/v/@kunalshetye/cms-sdk)](https://www.npmjs.com/package/@kunalshetye/cms-sdk)
 
-The official JavaScript/TypeScript SDK for building headless applications with Optimizely CMS. This comprehensive library provides everything you need to fetch, render, and manage content from Optimizely CMS with full type safety and intelligent code completion.
+> **Custom fork of [`@optimizely/cms-sdk`](https://www.npmjs.com/package/@optimizely/cms-sdk)**
+>
+> This package is a community-maintained fork published under the `@kunalshetye` scope. It tracks the official [`episerver/content-js-sdk`](https://github.com/episerver/content-js-sdk) repository and adds features not yet available upstream, such as built-in Optimizely Forms support and forms-availability detection.
+>
+> The `main` branch stays in sync with upstream. Custom changes live on the `@kunalshetye/content-js-sdk` release branch.
 
-## Features
+## What's different from the official SDK?
 
-- **Type-safe content modeling** - Full TypeScript definitions for your content types
-- **Framework integration** - First-class support for React and Next.js
-- **Live preview** - Real-time content editing experience
-- **Rich text rendering** - Advanced rich text component with extensibility
-- **DAM integration** - Seamless digital asset management
+- **Optimizely Forms support** - Built-in content type definitions for all 10 form element types
+- **Forms feature detection** - Automatic introspection check that only includes form fragments when Forms is installed on the CMS instance
+- **All upstream features** - Everything from the official SDK is included
 
 ## Installation
 
 ```bash
-npm install @optimizely/cms-sdk
+npm install @kunalshetye/cms-sdk@1.0.0-kunalshetye.1
 ```
 
 Or using other package managers:
 
 ```bash
 # pnpm
-pnpm add @optimizely/cms-sdk
+pnpm add @kunalshetye/cms-sdk@1.0.0-kunalshetye.1
 
 # yarn
-yarn add @optimizely/cms-sdk
+yarn add @kunalshetye/cms-sdk@1.0.0-kunalshetye.1
+
+# bun
+bun add @kunalshetye/cms-sdk@1.0.0-kunalshetye.1
 ```
+
+> [!NOTE]
+> All releases from this fork use the `-kunalshetye.N` prerelease suffix (e.g., `1.0.0-kunalshetye.1`, `1.0.0-kunalshetye.2`). The base version (e.g., `1.0.0`) tracks the upstream `@optimizely/cms-sdk` version it's based on.
+
+### Aliasing as `@optimizely/cms-sdk`
+
+If you have an existing codebase that imports from `@optimizely/cms-sdk` and don't want to rename all imports, you can alias this package:
+
+```json
+{
+  "dependencies": {
+    "@optimizely/cms-sdk": "npm:@kunalshetye/cms-sdk@1.0.0-kunalshetye.1"
+  }
+}
+```
+
+This lets you keep `import { ... } from '@optimizely/cms-sdk'` everywhere while using this fork under the hood.
 
 ## Quick Start
 
 ```typescript
-// Initialize the client
-const client = new GraphClient('<YOUR_APP_SINGLE_KEY>', {
-  graphUrl: 'https://your-cms-instance.com',
-});
+import { GraphClient, initContentTypeRegistry, FormContentTypes } from '@kunalshetye/cms-sdk';
 
-// Fetch content
-const c = await client.getContentByPath(`/<SOME_URL>`);
+// Register content types (including forms)
+initContentTypeRegistry([
+  ...FormContentTypes,
+  ...yourAppContentTypes,
+]);
+
+// Initialize the client
+const client = new GraphClient('<YOUR_APP_SINGLE_KEY>');
+
+// Fetch content — form fragments are included automatically if Forms is enabled
+const content = await client.getContentByPath('/some-page');
 ```
 
 ## Documentation
@@ -63,21 +91,21 @@ For comprehensive guides and documentation, visit the main repository:
 - [RichText Component (React)](../../docs/10-richtext-component-react.md) - Render rich text content
 - [DAM Assets](../../docs/11-dam-assets.md) - Manage digital assets
 - [Client Utils](../../docs/12-client-utils.md) - Utility functions and helpers
+- [Forms](../../docs/13-forms.md) - Working with Optimizely Forms
 
-## Best Practices
+## Keeping in sync with upstream
 
-This SDK works best when used with the [@optimizely/cms-cli](https://www.npmjs.com/package/@optimizely/cms-cli) package, which enables code-first content modeling by syncing your TypeScript definitions to Optimizely CMS.
+This fork follows a simple branching strategy:
 
-```bash
-npm install -D @optimizely/cms-cli
-```
+- **`main`** — Mirrors the official [`episerver/content-js-sdk`](https://github.com/episerver/content-js-sdk) via GitHub's upstream sync. No custom changes here.
+- **`@kunalshetye/content-js-sdk`** — Release branch with custom features. Periodically rebased/merged from `main` to pick up upstream changes.
 
-For complete setup instructions, see the [main repository README](https://github.com/episerver/content-js-sdk).
+Releases to npm are published exclusively from the `@kunalshetye/content-js-sdk` branch.
 
 ## Support
 
-- **Community Slack** - Join the [Optimizely Community Slack](https://optimizely-community.slack.com/archives/C0952JAST5J)
-- **GitHub Issues** - Report bugs or request features on [GitHub](https://github.com/episerver/content-js-sdk/issues)
+- **Upstream issues** - Report bugs in the official SDK on [GitHub](https://github.com/episerver/content-js-sdk/issues)
+- **Fork-specific issues** - For issues related to this fork's custom features (forms support, etc.), open an issue on this repository
 
 ## License
 
@@ -85,4 +113,4 @@ Apache License 2.0
 
 ---
 
-**Built by the Optimizely CMS Team** | [Documentation](../../docs/) | [GitHub](https://github.com/episerver/content-js-sdk)
+**Community fork maintained by [@kunalshetye](https://github.com/kunalshetye)** | [Documentation](../../docs/) | [Upstream](https://github.com/episerver/content-js-sdk)
