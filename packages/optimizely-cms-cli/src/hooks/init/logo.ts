@@ -17,6 +17,7 @@ const hook: Hook<'init'> = async function (opts) {
     console.log('   ╚═════╝ ╚═╝        ╚═╝   ╚═╝╚═╝     ╚═╝╚═╝╚══════╝╚══════╝╚══════╝╚═╝    ');
     console.log('');
     console.log('                         CMS CLI');
+    console.log('                    @kunalshetye fork');
     console.log('                 Code-first content modeling\n');
   }
 };

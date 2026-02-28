@@ -1,4 +1,4 @@
-import { contentType } from '@optimizely/cms-sdk';
+import { contentType } from '@kunalshetye/cms-sdk';
 
 export const HeroComponentType = contentType({
   key: 'HeroComponent',

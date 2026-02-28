@@ -8,8 +8,8 @@
     "test:manual": "optimizely-cms-cli config push ./content-types.optimizely.config.mjs"
   },
   "dependencies": {
-    "@optimizely/cms-sdk": "workspace:*",
-    "@optimizely/cms-cli": "workspace:*"
+    "@kunalshetye/cms-sdk": "workspace:*",
+    "@kunalshetye/cms-cli": "workspace:*"
   },
   "keywords": [],
   "author": "",

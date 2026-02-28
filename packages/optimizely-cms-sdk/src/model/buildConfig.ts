@@ -7,6 +7,8 @@ export type PropertyGroupType = {
 export type BuildConfig = {
   components: string[];
   propertyGroups: Array<PropertyGroupType>;
+  /** Directory for generated content type files. Default: './src/content' */
+  contentDir?: string;
 };
 
 // Built-in/default property groups that all users get

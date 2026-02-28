@@ -2,20 +2,25 @@ import createClient from 'openapi-fetch';
 import { paths } from './apiSchema/openapi-schema-types.js';
 import { readEnvCredentials } from './config.js';
 import { credentialErrors } from './error.js';
+import { withRetry } from '../utils/retry.js';
 
-function rootUrl() {
-  const rootUrl =
-    process.env.OPTIMIZELY_CMS_API_URL || 'https://api.cms.optimizely.com';
+function rootUrl(host?: string) {
+  const url =
+    host || process.env.OPTIMIZELY_CMS_API_URL || 'https://api.cms.optimizely.com';
 
-  if (rootUrl.endsWith('/')) {
-    return rootUrl.slice(0, -1);
+  if (url.endsWith('/')) {
+    return url.slice(0, -1);
   }
 
-  return rootUrl;
+  return url;
 }
 
-export async function getToken(clientId: string, clientSecret: string) {
-  const client = createClient<paths>({ baseUrl: rootUrl() });
+export async function getToken(
+  clientId: string,
+  clientSecret: string,
+  host?: string,
+) {
+  const client = createClient<paths>({ baseUrl: rootUrl(host) });
 
   return client
     .POST('/oauth/token', {
@@ -56,12 +61,14 @@ export async function getToken(clientId: string, clientSecret: string) {
 export async function createRestApiClient({
   clientId,
   clientSecret,
+  host,
 }: {
   clientId: string;
   clientSecret: string;
+  host?: string;
 }) {
-  const baseUrl = rootUrl() + '/preview3';
-  const accessToken = await getToken(clientId, clientSecret);
+  const baseUrl = rootUrl(host) + '/preview3';
+  const accessToken = await getToken(clientId, clientSecret, host);
 
   return createClient<paths>({
     baseUrl,
@@ -73,6 +80,12 @@ export async function createRestApiClient({
 
 export async function createApiClient(host?: string) {
   const cred = readEnvCredentials();
-  const client = await createRestApiClient(cred);
+  const client = await createRestApiClient({ ...cred, host });
   return client;
 }
+
+/**
+ * Wraps a REST API call with retry logic for transient failures (429, 5xx).
+ * Use this for critical operations like push/delete.
+ */
+export { withRetry } from '../utils/retry.js';

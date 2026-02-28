@@ -45,6 +45,11 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
       description:
         'CMS instance URL. For example: `my-instance.cms.optimizely.com`',
     }),
+    verbose: Flags.boolean({
+      char: 'v',
+      description: 'Enable detailed debug output',
+      default: false,
+    }),
   };
 
   protected flags!: Flags<T>;

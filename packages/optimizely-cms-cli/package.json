@@ -1,9 +1,9 @@
 {
-  "name": "@optimizely/cms-cli",
-  "version": "1.0.0",
+  "name": "@kunalshetye/cms-cli",
+  "version": "1.0.0-kunalshetye.1",
   "description": "CLI application for integration with Optimizely CMS",
   "repository": {
-    "url": "https://github.com/episerver/content-js-sdk.git"
+    "url": "https://github.com/kunalshetye/content-js-sdk.git"
   },
   "scripts": {
     "build": "tsc",
@@ -24,11 +24,14 @@
   ],
   "author": "Optimizely",
   "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "packageManager": "pnpm@10.7.0",
   "type": "module",
   "dependencies": {
     "@babel/plugin-transform-react-jsx": "^7.25.9",
-    "@optimizely/cms-sdk": "workspace:*",
+    "@kunalshetye/cms-sdk": "workspace:*",
     "@inquirer/prompts": "^7.4.0",
     "@oclif/core": "^4.2.10",
     "chalk": "^5.4.1",

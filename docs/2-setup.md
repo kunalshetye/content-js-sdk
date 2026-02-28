@@ -137,6 +137,21 @@ Property group configuration:
 
 Reference these groups in your content type properties using the `group` field.
 
+**Optional: Content Directory**
+
+The `contentDir` field specifies where `config pull` generates TypeScript files. This is useful when pulling content types from an existing CMS instance:
+
+```js
+import { buildConfig } from '@optimizely/cms-sdk';
+
+export default buildConfig({
+  components: ['./src/components/**/*.tsx'],
+  contentDir: './src/content',
+});
+```
+
+If omitted, `config pull` defaults to `./src/content`. When your project already has content types defined (matched by the `components` globs), `config pull` updates those files in-place and only writes new types to `contentDir`.
+
 ### Non-production environment
 
 The CLI uses the production API endpoints by default (https://api.cms.optimizely.com). If you want to use a different domain (for example https://api.cmstest.optimizely.com), configure it using the environment variable `OPTIMIZELY_CMS_API_URL`:

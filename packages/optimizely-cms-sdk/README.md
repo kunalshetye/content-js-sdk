@@ -14,6 +14,8 @@
 - **Forms feature detection** - Automatic introspection check that only includes form fragments when Forms is installed on the CMS instance
 - **All upstream features** - Everything from the official SDK is included
 
+For a complete reference, see the [Fork Features documentation](../../docs/14-fork-features.md).
+
 ## Installation
 
 ```bash
@@ -68,6 +70,16 @@ const client = new GraphClient('<YOUR_APP_SINGLE_KEY>');
 const content = await client.getContentByPath('/some-page');
 ```
 
+## Build Configuration
+
+The `buildConfig()` factory accepts the following options:
+
+| Field | Type | Description |
+|---|---|---|
+| `components` | `string[]` | Glob patterns to locate content type definition files |
+| `propertyGroups` | `PropertyGroupType[]` | Custom property groups for the CMS editor |
+| `contentDir` | `string` | Directory for generated content type files from `config pull` (default: `./src/content`) |
+
 ## Documentation
 
 For comprehensive guides and documentation, visit the main repository:
@@ -92,6 +104,7 @@ For comprehensive guides and documentation, visit the main repository:
 - [DAM Assets](../../docs/11-dam-assets.md) - Manage digital assets
 - [Client Utils](../../docs/12-client-utils.md) - Utility functions and helpers
 - [Forms](../../docs/13-forms.md) - Working with Optimizely Forms
+- [Fork Features](../../docs/14-fork-features.md) - Complete reference of features unique to this fork
 
 ## Keeping in sync with upstream
 

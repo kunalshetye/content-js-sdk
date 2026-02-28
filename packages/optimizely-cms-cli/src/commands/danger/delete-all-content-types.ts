@@ -1,7 +1,8 @@
 import { confirm } from '@inquirer/prompts';
+import { Flags } from '@oclif/core';
 import { BaseCommand } from '../../baseCommand.js';
-import ora from 'ora';
 import { createApiClient } from '../../service/cmsRestClient.js';
+import { createSpinner } from '../../utils/spinner.js';
 
 export default class DangerDeleteAllContentTypes extends BaseCommand<
   typeof DangerDeleteAllContentTypes
@@ -12,19 +13,28 @@ export default class DangerDeleteAllContentTypes extends BaseCommand<
   static override examples = [
     '<%= config.bin %> <%= command.id %>',
     '<%= config.bin %> <%= command.id %> --host https://example.com',
+    '<%= config.bin %> <%= command.id %> --yes',
   ];
-  static override flags = {};
+  static override flags = {
+    yes: Flags.boolean({
+      char: 'y',
+      description: 'Skip confirmation prompts (for CI/CD)',
+      default: false,
+    }),
+  };
 
   public async run(): Promise<void> {
     const { args, flags } = await this.parse(DangerDeleteAllContentTypes);
     const client = await createApiClient(flags.host);
 
-    const answer = await confirm({
-      message: 'This will delete all your content types. Are you sure?',
-    });
+    if (!flags.yes) {
+      const answer = await confirm({
+        message: 'This will delete all your content types. Are you sure?',
+      });
 
-    if (!answer) {
-      return;
+      if (!answer) {
+        return;
+      }
     }
 
     const contentTypes = await client
@@ -50,16 +60,18 @@ export default class DangerDeleteAllContentTypes extends BaseCommand<
       console.log(`- ${type.displayName} (${type.key})`);
     }
 
-    const answer2 = await confirm({
-      message: 'Are you sure?',
-    });
+    if (!flags.yes) {
+      const answer2 = await confirm({
+        message: 'Are you sure?',
+      });
 
-    if (!answer2) {
-      return;
+      if (!answer2) {
+        return;
+      }
     }
 
     for (const type of deletedTypes) {
-      const spinner = ora(`Deleting ${type.key}...`);
+      const spinner = createSpinner(`Deleting ${type.key}...`).start();
       const r = await client.DELETE('/contenttypes/{key}', {
         params: { path: { key: type.key } },
       });

@@ -1,7 +1,7 @@
 import { glob } from 'glob';
 import * as esbuild from 'esbuild';
 import { tmpdir } from 'node:os';
-import { mkdtemp } from 'node:fs/promises';
+import { mkdtemp, rm } from 'node:fs/promises';
 
 import {
   ContentTypes,
@@ -9,10 +9,11 @@ import {
   DisplayTemplates,
   isDisplayTemplate,
   PropertyGroupType,
-} from '@optimizely/cms-sdk';
+} from '@kunalshetye/cms-sdk';
 import chalk from 'chalk';
 import * as path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { type Logger, noopLogger } from '../utils/logger.js';
 
 export type Prettify<T> = {
   [K in keyof T]: T[K];
@@ -96,12 +97,13 @@ async function compileAndImport(
   inputName: string,
   cwdUrl: string,
   outDir: string,
+  logger: Logger = noopLogger,
 ) {
   // Note: we must pass paths as "Node.js paths" to `esbuild.build()`
   const cwdPath = fileURLToPath(cwdUrl);
   const outPath = path.join(outDir, `${inputName}.js`);
 
-  // TODO: log outPath in verbose mode
+  logger.debug(`Compiling ${inputName} → ${outPath}`);
   await esbuild.build({
     entryPoints: [inputName],
     absWorkingDir: cwdPath,
@@ -120,6 +122,7 @@ async function compileAndImport(
       `Error when importing the file at path "${outPath}": ${
         (err as any).message
       }`,
+      { cause: err },
     );
   }
 }
@@ -128,69 +131,102 @@ async function compileAndImport(
 export async function findMetaData(
   componentPaths: string[],
   cwd: string,
+  logger: Logger = noopLogger,
 ): Promise<{
   contentTypes: AnyContentType[];
   displayTemplates: DisplayTemplate[];
 }> {
   const tmpDir = await mkdtemp(path.join(tmpdir(), 'optimizely-cli-'));
 
-  // Normalize and clean component paths (trim and remove empty patterns)
-  const cleanedPaths = componentPaths
-    .map((p) => p.trim())
-    .filter((p) => p.length > 0);
+  try {
+    // Normalize and clean component paths (trim and remove empty patterns)
+    const cleanedPaths = componentPaths
+      .map((p) => p.trim())
+      .filter((p) => p.length > 0);
 
-  // Separate inclusion and exclusion patterns
-  const includePatterns = cleanedPaths.filter((p) => !p.startsWith('!'));
-  const excludePatterns = cleanedPaths
-    .filter((p) => p.startsWith('!'))
-    .map((p) => p.substring(1)); // Remove '!' prefix
+    // Separate inclusion and exclusion patterns
+    const includePatterns = cleanedPaths.filter((p) => !p.startsWith('!'));
+    const excludePatterns = cleanedPaths
+      .filter((p) => p.startsWith('!'))
+      .map((p) => p.substring(1)); // Remove '!' prefix
 
-  // Validate patterns
-  if (includePatterns.length === 0 && excludePatterns.length > 0) {
-    throw new Error(
-      `❌ [optimizely-cms-cli] Invalid component paths: cannot have only exclusion patterns`,
-    );
-  }
-
-  // Retrieve sets of files via glob for inclusion patterns, using ignore for exclusions
-  const allFilesWithDuplicates = (
-    await Promise.all(
-      includePatterns.map((path) =>
-        glob(path, {
-          cwd,
-          dotRelative: true,
-          posix: true,
-          ignore: excludePatterns,
-        }),
-      ),
-    )
-  ).flat();
-
-  // Remove duplicates and sort
-  const allFiles = [...new Set(allFilesWithDuplicates)].sort();
-
-  // Process each file
-  const result2 = {
-    contentTypes: [] as AnyContentType[],
-    displayTemplates: [] as DisplayTemplate[],
-  };
-
-  for (const file of allFiles) {
-    const loaded = await compileAndImport(file, cwd, tmpDir);
-    const { contentTypeData, displayTemplateData } = extractMetaData(loaded);
-
-    for (const c of contentTypeData) {
-      printFilesContents('Content Type', file, c);
-      result2.contentTypes.push(c);
+    // Validate patterns
+    if (includePatterns.length === 0 && excludePatterns.length > 0) {
+      throw new Error(
+        `❌ [optimizely-cms-cli] Invalid component paths: cannot have only exclusion patterns`,
+      );
     }
 
-    for (const d of displayTemplateData) {
-      printFilesContents('Display Template', file, d);
-      result2.displayTemplates.push(d);
+    logger.debug(`Glob include patterns: ${includePatterns.join(', ')}`);
+    if (excludePatterns.length > 0) {
+      logger.debug(`Glob exclude patterns: ${excludePatterns.join(', ')}`);
     }
-  }
 
-  return result2;
+    // Retrieve sets of files via glob for inclusion patterns, using ignore for exclusions
+    const allFilesWithDuplicates = (
+      await Promise.all(
+        includePatterns.map((pattern) =>
+          glob(pattern, {
+            cwd,
+            dotRelative: true,
+            posix: true,
+            ignore: excludePatterns,
+          }),
+        ),
+      )
+    ).flat();
+
+    // Remove duplicates and sort
+    const allFiles = [...new Set(allFilesWithDuplicates)].sort();
+
+    // Warn when glob patterns match zero files (2.1)
+    if (allFiles.length === 0) {
+      console.warn(
+        chalk.yellow(
+          `Warning: No files matched the component patterns: ${includePatterns.join(', ')}. ` +
+          `Check your glob patterns in the config file.`,
+        ),
+      );
+    }
+
+    logger.debug(`Matched ${allFiles.length} file(s)`);
+
+    // Process each file
+    const result2 = {
+      contentTypes: [] as AnyContentType[],
+      displayTemplates: [] as DisplayTemplate[],
+    };
+
+    for (const file of allFiles) {
+      const loaded = await compileAndImport(file, cwd, tmpDir, logger);
+      const { contentTypeData, displayTemplateData } = extractMetaData(loaded);
+
+      // Warn when a compiled file exports no ContentType or DisplayTemplate (2.2)
+      if (contentTypeData.length === 0 && displayTemplateData.length === 0) {
+        console.warn(
+          chalk.yellow(
+            `Warning: File "${file}" does not export any ContentType or DisplayTemplate. ` +
+            `Make sure exports are correctly defined.`,
+          ),
+        );
+      }
+
+      for (const c of contentTypeData) {
+        printFilesContents('Content Type', file, c);
+        result2.contentTypes.push(c);
+      }
+
+      for (const d of displayTemplateData) {
+        printFilesContents('Display Template', file, d);
+        result2.displayTemplates.push(d);
+      }
+    }
+
+    return result2;
+  } finally {
+    // Clean up temp directory (1.3)
+    await rm(tmpDir, { recursive: true, force: true });
+  }
 }
 
 function printFilesContents(
