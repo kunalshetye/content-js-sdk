@@ -18,7 +18,10 @@ describe('createFragment() with damEnabled for contentReference properties', () 
     initContentTypeRegistry([ct1]);
 
     // DAM disabled
-    const result = await createFragment('ct1', new Set(), '', true, false);
+    const result = await createFragment('ct1', new Set(), '', {
+      damEnabled: false,
+      includeBaseFragments: true,
+    });
 
     // Should not include ContentReferenceItem fragments
     expect(result.some((line) => line.includes('PublicImageAsset'))).toBe(
@@ -59,7 +62,10 @@ describe('createFragment() with damEnabled for contentReference properties', () 
     initContentTypeRegistry([ct1]);
 
     // DAM enabled
-    const result = await createFragment('ct1', new Set(), '', true, true);
+    const result = await createFragment('ct1', new Set(), '', {
+      damEnabled: true,
+      includeBaseFragments: true,
+    });
 
     // Should include ContentReferenceItem (with just __typename for DAM detection)
     expect(result.some((line) => line.includes('ContentReferenceItem'))).toBe(
@@ -98,7 +104,10 @@ describe('createFragment() with damEnabled for contentReference properties', () 
     initContentTypeRegistry([ct1]);
 
     // DAM disabled
-    const result = await createFragment('ct1', new Set(), '', true, false);
+    const result = await createFragment('ct1', new Set(), '', {
+      damEnabled: false,
+      includeBaseFragments: true,
+    });
 
     expect(result.some((line) => line.includes('ContentReferenceItem'))).toBe(
       false,
@@ -126,7 +135,10 @@ describe('createFragment() with damEnabled for contentReference properties', () 
     });
     initContentTypeRegistry([ct1]);
 
-    const result = await createFragment('ct1', new Set(), '', true, true);
+    const result = await createFragment('ct1', new Set(), '', {
+      damEnabled: true,
+      includeBaseFragments: true,
+    });
 
     expect(result.some((line) => line.includes('ContentReferenceItem'))).toBe(
       true,
@@ -163,25 +175,19 @@ describe('createFragment() with damEnabled for contentReference properties', () 
     initContentTypeRegistry([ct1, ctBlock]);
 
     // Test with damEnabled = false
-    const resultDisabled = await createFragment(
-      'ct1',
-      new Set(),
-      '',
-      true,
-      false,
-    );
+    const resultDisabled = await createFragment('ct1', new Set(), '', {
+      damEnabled: false,
+      includeBaseFragments: true,
+    });
     expect(
       resultDisabled.some((line) => line.includes('ContentReferenceItem')),
     ).toBe(false);
 
     // Test with damEnabled = true
-    const resultEnabled = await createFragment(
-      'ct1',
-      new Set(),
-      '',
-      true,
-      true,
-    );
+    const resultEnabled = await createFragment('ct1', new Set(), '', {
+      damEnabled: true,
+      includeBaseFragments: true,
+    });
     expect(
       resultEnabled.some((line) => line.includes('ContentReferenceItem')),
     ).toBe(true);
@@ -218,7 +224,10 @@ describe('createFragment() with damEnabled for contentReference properties', () 
     initContentTypeRegistry([ct1, ctRef]);
 
     // Test with damEnabled = true
-    const result = await createFragment('ct1', new Set(), '', true, true);
+    const result = await createFragment('ct1', new Set(), '', {
+      damEnabled: true,
+      includeBaseFragments: true,
+    });
     expect(result.some((line) => line.includes('ContentReferenceItem'))).toBe(
       true,
     );
@@ -250,7 +259,10 @@ describe('createFragment() with damEnabled for contentReference properties', () 
     initContentTypeRegistry([ct1]);
 
     // DAM enabled but no contentReference properties
-    const result = await createFragment('ct1', new Set(), '', true, true);
+    const result = await createFragment('ct1', new Set(), '', {
+      damEnabled: true,
+      includeBaseFragments: true,
+    });
 
     // Should NOT include DAM fragments
     expect(result.some((line) => line.includes('PublicImageAsset'))).toBe(
@@ -296,7 +308,10 @@ describe('createFragment() with damEnabled for contentReference properties', () 
     });
     initContentTypeRegistry([ct1, ctBlock]);
 
-    const result = await createFragment('ct1', new Set(), '', true, true);
+    const result = await createFragment('ct1', new Set(), '', {
+      damEnabled: true,
+      includeBaseFragments: true,
+    });
 
     // Should NOT include DAM fragments since no contentReference anywhere
     expect(result.some((line) => line.includes('ContentReferenceItem'))).toBe(

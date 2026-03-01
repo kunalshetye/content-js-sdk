@@ -96,7 +96,7 @@ describe('composition field for components with hasComposition', () => {
   test('form container fragment includes composition field with ICompositionNode', async () => {
     initContentTypeRegistry(FormContentTypes);
 
-    const result = createFragment('OptiFormsContainerData', new Set(), '', true, false, true);
+    const result = createFragment('OptiFormsContainerData', new Set(), '', { includeBaseFragments: true, formsEnabled: true });
 
     // The OptiFormsContainerData fragment should include composition {...ICompositionNode}
     const containerFragment = result.find((f) => f.startsWith('fragment OptiFormsContainerData on'));
@@ -117,7 +117,7 @@ describe('composition field for components with hasComposition', () => {
   test('form field elements do NOT get composition field (no hasComposition)', async () => {
     initContentTypeRegistry(FormContentTypes);
 
-    const result = createFragment('OptiFormsTextboxElement', new Set(), '', true, false, true);
+    const result = createFragment('OptiFormsTextboxElement', new Set(), '', { includeBaseFragments: true, formsEnabled: true });
 
     const textboxFragment = result.find((f) => f.startsWith('fragment OptiFormsTextboxElement on'));
     expect(textboxFragment).toBeDefined();
@@ -136,7 +136,7 @@ describe('composition field for components with hasComposition', () => {
     });
     initContentTypeRegistry([myExperience, ...FormContentTypes]);
 
-    const result = createFragment('TestExperience', new Set(), '', true, false, true);
+    const result = createFragment('TestExperience', new Set(), '', { includeBaseFragments: true, formsEnabled: true });
 
     // OptiFormsContainerData fragment within the experience should include composition
     const containerFragment = result.find((f) => f.startsWith('fragment OptiFormsContainerData on'));
@@ -200,7 +200,7 @@ describe('formsEnabled feature detection in experience fragments', () => {
       OptiFormsContainerDataContentType,
     ]);
 
-    const result = await createFragment('TestExperience', new Set(), '', true, false, true);
+    const result = await createFragment('TestExperience', new Set(), '', { includeBaseFragments: true, formsEnabled: true });
 
     // _IComponent fragment should include form types
     const componentFragment = result.find((f) => f.startsWith('fragment _IComponent'));
@@ -221,7 +221,7 @@ describe('formsEnabled feature detection in experience fragments', () => {
       OptiFormsContainerDataContentType,
     ]);
 
-    const result = await createFragment('TestExperience', new Set(), '', true, false, false);
+    const result = await createFragment('TestExperience', new Set(), '', { includeBaseFragments: true, formsEnabled: false });
 
     // _IComponent fragment should NOT include form types
     const componentFragment = result.find((f) => f.startsWith('fragment _IComponent'));
@@ -250,7 +250,7 @@ describe('formsEnabled feature detection in experience fragments', () => {
       OptiFormsTextboxElementContentType,
     ]);
 
-    const result = await createFragment('TestExperience', new Set(), '', true, false, false);
+    const result = await createFragment('TestExperience', new Set(), '', { includeBaseFragments: true, formsEnabled: false });
 
     const componentFragment = result.find((f) => f.startsWith('fragment _IComponent'));
     expect(componentFragment).toBeDefined();
