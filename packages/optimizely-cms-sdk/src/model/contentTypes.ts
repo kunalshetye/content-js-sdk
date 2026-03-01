@@ -61,6 +61,10 @@ export type FolderContentType = BaseContentType & {
 export type ComponentContentType = BaseContentType & {
   baseType: '_component';
   compositionBehaviors?: ('sectionEnabled' | 'elementEnabled')[];
+  /** When true, includes the `composition` field in generated GraphQL fragments.
+   *  Use for container types (e.g. form containers) that have their own inner
+   *  composition tree in Content Graph. */
+  hasComposition?: boolean;
   mayContainTypes?: Array<ContentType<ComponentContentType> | '_self' | string>;
 };
 

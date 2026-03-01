@@ -22,7 +22,10 @@ describe('createFragment() for form content types', () => {
         "fragment ContentUrl on ContentUrl { type default hierarchical internal graph base }",
         "fragment IContentMetadata on IContentMetadata { key locale fallbackForLocale version displayName url {...ContentUrl} types published status created lastModified sortOrder variation ...MediaMetadata ...ItemMetadata ...InstanceMetadata }",
         "fragment _IContent on _IContent { _id _metadata {...IContentMetadata} }",
-        "fragment OptiFormsContainerData on OptiFormsContainerData { __typename OptiFormsContainerData__Title:Title OptiFormsContainerData__Description:Description OptiFormsContainerData__ShowSummaryMessageAfterSubmission:ShowSummaryMessageAfterSubmission OptiFormsContainerData__SubmitConfirmationMessage:SubmitConfirmationMessage OptiFormsContainerData__ResetConfirmationMessage:ResetConfirmationMessage OptiFormsContainerData__SubmitUrl:SubmitUrl { ...ContentUrl } ..._IContent }",
+        "fragment _IExperience on _IExperience { composition {...ICompositionNode }}",
+        "fragment ICompositionNode on ICompositionNode { __typename key type nodeType layoutType displayName displayTemplateKey displaySettings {key value} ...on CompositionStructureNode { nodes @recursive } ...on CompositionComponentNode { nodeType component { ..._IComponent } } }",
+        "fragment _IComponent on _IComponent { __typename  }",
+        "fragment OptiFormsContainerData on OptiFormsContainerData { __typename OptiFormsContainerData__Title:Title OptiFormsContainerData__Description:Description OptiFormsContainerData__ShowSummaryMessageAfterSubmission:ShowSummaryMessageAfterSubmission OptiFormsContainerData__SubmitConfirmationMessage:SubmitConfirmationMessage OptiFormsContainerData__ResetConfirmationMessage:ResetConfirmationMessage OptiFormsContainerData__SubmitUrl:SubmitUrl { ...ContentUrl } ..._IContent composition {...ICompositionNode} }",
       ]
     `);
   });
@@ -86,6 +89,101 @@ describe('createFragment() for form content types', () => {
         'OptiFormsNonExistentType'
       );
     }
+  });
+});
+
+describe('composition field for components with hasComposition', () => {
+  test('form container fragment includes composition field with ICompositionNode', async () => {
+    initContentTypeRegistry(FormContentTypes);
+
+    const result = createFragment('OptiFormsContainerData', new Set(), '', true, false, true);
+
+    // The OptiFormsContainerData fragment should include composition {...ICompositionNode}
+    const containerFragment = result.find((f) => f.startsWith('fragment OptiFormsContainerData on'));
+    expect(containerFragment).toBeDefined();
+    expect(containerFragment).toContain('composition {...ICompositionNode}');
+
+    // ICompositionNode fragment should be present
+    const compositionFragment = result.find((f) => f.startsWith('fragment ICompositionNode'));
+    expect(compositionFragment).toBeDefined();
+
+    // _IComponent fragment should include form field type spreads
+    const componentFragment = result.find((f) => f.startsWith('fragment _IComponent'));
+    expect(componentFragment).toBeDefined();
+    expect(componentFragment).toContain('...OptiFormsTextboxElement');
+    expect(componentFragment).toContain('...OptiFormsSubmitElement');
+  });
+
+  test('form field elements do NOT get composition field (no hasComposition)', async () => {
+    initContentTypeRegistry(FormContentTypes);
+
+    const result = createFragment('OptiFormsTextboxElement', new Set(), '', true, false, true);
+
+    const textboxFragment = result.find((f) => f.startsWith('fragment OptiFormsTextboxElement on'));
+    expect(textboxFragment).toBeDefined();
+    // Should include its own properties
+    expect(textboxFragment).toContain('Label');
+    expect(textboxFragment).toContain('Placeholder');
+    // Should NOT include composition (leaf element, no hasComposition)
+    expect(textboxFragment).not.toContain('composition');
+  });
+
+  test('experience with form container includes composition in container fragment', async () => {
+    const myExperience = contentType({
+      key: 'TestExperience',
+      baseType: '_experience',
+      properties: {},
+    });
+    initContentTypeRegistry([myExperience, ...FormContentTypes]);
+
+    const result = createFragment('TestExperience', new Set(), '', true, false, true);
+
+    // OptiFormsContainerData fragment within the experience should include composition
+    const containerFragment = result.find((f) => f.startsWith('fragment OptiFormsContainerData on'));
+    expect(containerFragment).toBeDefined();
+    expect(containerFragment).toContain('composition {...ICompositionNode}');
+
+    // Other form element fragments should NOT include composition
+    const textboxFragment = result.find((f) => f.startsWith('fragment OptiFormsTextboxElement on'));
+    expect(textboxFragment).toBeDefined();
+    expect(textboxFragment).not.toContain('composition');
+  });
+
+  test('component with compositionBehaviors but no hasComposition does NOT get composition', async () => {
+    const regularComponent = contentType({
+      key: 'RegularComponent',
+      baseType: '_component',
+      compositionBehaviors: ['elementEnabled'],
+      properties: {
+        heading: { type: 'string' },
+      },
+    });
+    initContentTypeRegistry([regularComponent]);
+
+    const result = createFragment('RegularComponent');
+
+    const fragment = result.find((f) => f.startsWith('fragment RegularComponent on'));
+    expect(fragment).toBeDefined();
+    expect(fragment).not.toContain('composition');
+  });
+
+  test('component with hasComposition: true gets composition field', async () => {
+    const customContainer = contentType({
+      key: 'CustomContainer',
+      baseType: '_component',
+      compositionBehaviors: ['elementEnabled'],
+      hasComposition: true,
+      properties: {
+        heading: { type: 'string' },
+      },
+    });
+    initContentTypeRegistry([customContainer]);
+
+    const result = createFragment('CustomContainer');
+
+    const fragment = result.find((f) => f.startsWith('fragment CustomContainer on'));
+    expect(fragment).toBeDefined();
+    expect(fragment).toContain('composition {...ICompositionNode}');
   });
 });
 

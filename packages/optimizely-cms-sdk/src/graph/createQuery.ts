@@ -303,6 +303,20 @@ export function createFragment(
       fields.push('..._IExperience');
       extraFragments.push(...createExperienceFragments(visited, damEnabled, formsEnabled));
     }
+
+    // Components with hasComposition (e.g. form containers) have their own
+    // composition field in Content Graph that holds their inner element tree.
+    // Include it so nested component data (labels, placeholders, etc.) is fetched.
+    if (
+      ct.baseType === '_component' &&
+      'hasComposition' in ct &&
+      ct.hasComposition === true
+    ) {
+      fields.push('composition {...ICompositionNode}');
+      extraFragments.push(
+        ...createExperienceFragments(visited, damEnabled, formsEnabled),
+      );
+    }
   }
 
   // Convert base type key to GraphQL fragment format

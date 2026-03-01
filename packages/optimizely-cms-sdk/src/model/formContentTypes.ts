@@ -12,6 +12,7 @@ export const OptiFormsContainerDataContentType = contentType({
   displayName: 'Form Container',
   baseType: '_component',
   compositionBehaviors: ['elementEnabled'],
+  hasComposition: true,
   properties: {
     Title: { type: 'string' },
     Description: { type: 'string' },
