@@ -43,12 +43,12 @@ describe('createFragment() with damEnabled for contentReference properties', () 
         "fragment ContentUrl on ContentUrl { type default hierarchical internal graph base }",
         "fragment IContentMetadata on IContentMetadata { key locale fallbackForLocale version displayName url {...ContentUrl} types published status created lastModified sortOrder variation ...MediaMetadata ...ItemMetadata ...InstanceMetadata }",
         "fragment _IContent on _IContent { _id _metadata {...IContentMetadata} }",
-        "fragment ct1 on ct1 { __typename image { key url { ...ContentUrl } } ..._IContent }",
+        "fragment ct1 on ct1 { __typename ct1__image:image { key url { ...ContentUrl } } ..._IContent }",
       ]
     `);
   });
 
-  test('damEnabled = true should include ContentReferenceItem fragment', async () => {
+  test('damEnabled = true should include ContentReferenceItem fragment with item typename', async () => {
     const ct1 = contentType({
       key: 'ct1',
       baseType: '_page',
@@ -61,29 +61,28 @@ describe('createFragment() with damEnabled for contentReference properties', () 
     // DAM enabled
     const result = await createFragment('ct1', new Set(), '', true, true);
 
-    // Should include all ContentReferenceItem fragments
-    expect(result.some((line) => line.includes('PublicImageAsset'))).toBe(true);
-    expect(result.some((line) => line.includes('PublicVideoAsset'))).toBe(true);
-    expect(result.some((line) => line.includes('PublicRawFileAsset'))).toBe(
-      true,
-    );
+    // Should include ContentReferenceItem (with just __typename for DAM detection)
     expect(result.some((line) => line.includes('ContentReferenceItem'))).toBe(
       true,
     );
 
+    // CMP type fragments should NOT be in the main query (resolved via damResolver)
+    expect(result.some((line) => line.includes('PublicImageAsset'))).toBe(false);
+    expect(result.some((line) => line.includes('PublicVideoAsset'))).toBe(false);
+    expect(result.some((line) => line.includes('PublicRawFileAsset'))).toBe(
+      false,
+    );
+
     expect(result).toMatchInlineSnapshot(`
       [
-        "fragment PublicImageAsset on cmp_PublicImageAsset { Url Title AltText Description MimeType Height Width Renditions { Id Name Url Width Height } FocalPoint { X Y } Tags { Guid Name } }",
-        "fragment PublicVideoAsset on cmp_PublicVideoAsset { Url Title AltText Description MimeType Renditions { Id Name Url Width Height } Tags { Guid Name } }",
-        "fragment PublicRawFileAsset on cmp_PublicRawFileAsset { Url Title Description MimeType Tags { Guid Name } }",
-        "fragment ContentReferenceItem on ContentReference { item { __typename ...PublicImageAsset ...PublicVideoAsset ...PublicRawFileAsset } }",
+        "fragment ContentReferenceItem on ContentReference { item { __typename } }",
         "fragment MediaMetadata on MediaMetadata { mimeType thumbnail content }",
         "fragment ItemMetadata on ItemMetadata { changeset displayOption }",
         "fragment InstanceMetadata on InstanceMetadata { changeset locales expired container owner routeSegment lastModifiedBy path createdBy }",
         "fragment ContentUrl on ContentUrl { type default hierarchical internal graph base }",
         "fragment IContentMetadata on IContentMetadata { key locale fallbackForLocale version displayName url {...ContentUrl} types published status created lastModified sortOrder variation ...MediaMetadata ...ItemMetadata ...InstanceMetadata }",
         "fragment _IContent on _IContent { _id _metadata {...IContentMetadata} }",
-        "fragment ct1 on ct1 { __typename image { key url { ...ContentUrl } ...ContentReferenceItem } ..._IContent }",
+        "fragment ct1 on ct1 { __typename ct1__image:image { key url { ...ContentUrl } ...ContentReferenceItem } ..._IContent }",
       ]
     `);
   });
@@ -112,7 +111,7 @@ describe('createFragment() with damEnabled for contentReference properties', () 
         "fragment ContentUrl on ContentUrl { type default hierarchical internal graph base }",
         "fragment IContentMetadata on IContentMetadata { key locale fallbackForLocale version displayName url {...ContentUrl} types published status created lastModified sortOrder variation ...MediaMetadata ...ItemMetadata ...InstanceMetadata }",
         "fragment _IContent on _IContent { _id _metadata {...IContentMetadata} }",
-        "fragment ct1 on ct1 { __typename images { key url { ...ContentUrl } } ..._IContent }",
+        "fragment ct1 on ct1 { __typename ct1__images:images { key url { ...ContentUrl } } ..._IContent }",
       ]
     `);
   });
@@ -134,17 +133,14 @@ describe('createFragment() with damEnabled for contentReference properties', () 
     );
     expect(result).toMatchInlineSnapshot(`
       [
-        "fragment PublicImageAsset on cmp_PublicImageAsset { Url Title AltText Description MimeType Height Width Renditions { Id Name Url Width Height } FocalPoint { X Y } Tags { Guid Name } }",
-        "fragment PublicVideoAsset on cmp_PublicVideoAsset { Url Title AltText Description MimeType Renditions { Id Name Url Width Height } Tags { Guid Name } }",
-        "fragment PublicRawFileAsset on cmp_PublicRawFileAsset { Url Title Description MimeType Tags { Guid Name } }",
-        "fragment ContentReferenceItem on ContentReference { item { __typename ...PublicImageAsset ...PublicVideoAsset ...PublicRawFileAsset } }",
+        "fragment ContentReferenceItem on ContentReference { item { __typename } }",
         "fragment MediaMetadata on MediaMetadata { mimeType thumbnail content }",
         "fragment ItemMetadata on ItemMetadata { changeset displayOption }",
         "fragment InstanceMetadata on InstanceMetadata { changeset locales expired container owner routeSegment lastModifiedBy path createdBy }",
         "fragment ContentUrl on ContentUrl { type default hierarchical internal graph base }",
         "fragment IContentMetadata on IContentMetadata { key locale fallbackForLocale version displayName url {...ContentUrl} types published status created lastModified sortOrder variation ...MediaMetadata ...ItemMetadata ...InstanceMetadata }",
         "fragment _IContent on _IContent { _id _metadata {...IContentMetadata} }",
-        "fragment ct1 on ct1 { __typename images { key url { ...ContentUrl } ...ContentReferenceItem } ..._IContent }",
+        "fragment ct1 on ct1 { __typename ct1__images:images { key url { ...ContentUrl } ...ContentReferenceItem } ..._IContent }",
       ]
     `);
   });
@@ -197,11 +193,8 @@ describe('createFragment() with damEnabled for contentReference properties', () 
         "fragment ContentUrl on ContentUrl { type default hierarchical internal graph base }",
         "fragment IContentMetadata on IContentMetadata { key locale fallbackForLocale version displayName url {...ContentUrl} types published status created lastModified sortOrder variation ...MediaMetadata ...ItemMetadata ...InstanceMetadata }",
         "fragment _IContent on _IContent { _id _metadata {...IContentMetadata} }",
-        "fragment PublicImageAsset on cmp_PublicImageAsset { Url Title AltText Description MimeType Height Width Renditions { Id Name Url Width Height } FocalPoint { X Y } Tags { Guid Name } }",
-        "fragment PublicVideoAsset on cmp_PublicVideoAsset { Url Title AltText Description MimeType Renditions { Id Name Url Width Height } Tags { Guid Name } }",
-        "fragment PublicRawFileAsset on cmp_PublicRawFileAsset { Url Title Description MimeType Tags { Guid Name } }",
-        "fragment ContentReferenceItem on ContentReference { item { __typename ...PublicImageAsset ...PublicVideoAsset ...PublicRawFileAsset } }",
-        "fragment ctBlockProperty on ctBlockProperty { __typename image { key url { ...ContentUrl } ...ContentReferenceItem } }",
+        "fragment ContentReferenceItem on ContentReference { item { __typename } }",
+        "fragment ctBlockProperty on ctBlockProperty { __typename ctBlockProperty__image:image { key url { ...ContentUrl } ...ContentReferenceItem } }",
         "fragment ct1 on ct1 { __typename ct1__block:block { ...ctBlockProperty } ..._IContent }",
       ]
     `);
@@ -237,11 +230,8 @@ describe('createFragment() with damEnabled for contentReference properties', () 
         "fragment ContentUrl on ContentUrl { type default hierarchical internal graph base }",
         "fragment IContentMetadata on IContentMetadata { key locale fallbackForLocale version displayName url {...ContentUrl} types published status created lastModified sortOrder variation ...MediaMetadata ...ItemMetadata ...InstanceMetadata }",
         "fragment _IContent on _IContent { _id _metadata {...IContentMetadata} }",
-        "fragment PublicImageAsset on cmp_PublicImageAsset { Url Title AltText Description MimeType Height Width Renditions { Id Name Url Width Height } FocalPoint { X Y } Tags { Guid Name } }",
-        "fragment PublicVideoAsset on cmp_PublicVideoAsset { Url Title AltText Description MimeType Renditions { Id Name Url Width Height } Tags { Guid Name } }",
-        "fragment PublicRawFileAsset on cmp_PublicRawFileAsset { Url Title Description MimeType Tags { Guid Name } }",
-        "fragment ContentReferenceItem on ContentReference { item { __typename ...PublicImageAsset ...PublicVideoAsset ...PublicRawFileAsset } }",
-        "fragment ctRef on ctRef { __typename image { key url { ...ContentUrl } ...ContentReferenceItem } ..._IContent }",
+        "fragment ContentReferenceItem on ContentReference { item { __typename } }",
+        "fragment ctRef on ctRef { __typename ctRef__image:image { key url { ...ContentUrl } ...ContentReferenceItem } ..._IContent }",
         "fragment ct1 on ct1 { __typename ct1__content:content { __typename ...ctRef } ..._IContent }",
       ]
     `);
@@ -333,10 +323,10 @@ describe('createSingleContentQuery() with damEnabled', () => {
 
     expect(query.includes('PublicImageAsset')).toBe(false);
     expect(query.includes('ContentReferenceItem')).toBe(false);
-    expect(query).toContain('image { key url { ...ContentUrl } }');
+    expect(query).toContain('ct1__image:image { key url { ...ContentUrl } }');
   });
 
-  test('createSingleContentQuery: damEnabled = true should include DAM fragments', async () => {
+  test('createSingleContentQuery: damEnabled = true should include ContentReferenceItem', async () => {
     const ct1 = contentType({
       key: 'ct1',
       baseType: '_page',
@@ -348,12 +338,14 @@ describe('createSingleContentQuery() with damEnabled', () => {
 
     const query = await createSingleContentQuery('ct1', true);
 
-    expect(query.includes('PublicImageAsset')).toBe(true);
-    expect(query.includes('PublicVideoAsset')).toBe(true);
-    expect(query.includes('PublicRawFileAsset')).toBe(true);
+    // CMP type fragments should NOT be in the main query
+    expect(query.includes('PublicImageAsset')).toBe(false);
+    expect(query.includes('PublicVideoAsset')).toBe(false);
+    expect(query.includes('PublicRawFileAsset')).toBe(false);
+    // ContentReferenceItem should be present (with just __typename)
     expect(query.includes('ContentReferenceItem')).toBe(true);
     expect(query).toContain(
-      'image { key url { ...ContentUrl } ...ContentReferenceItem }',
+      'ct1__image:image { key url { ...ContentUrl } ...ContentReferenceItem }',
     );
   });
 });
@@ -375,7 +367,7 @@ describe('createMultipleContentQuery() with damEnabled', () => {
     expect(query.includes('ContentReferenceItem')).toBe(false);
   });
 
-  test('createMultipleContentQuery: damEnabled = true should include DAM fragments', async () => {
+  test('createMultipleContentQuery: damEnabled = true should include ContentReferenceItem', async () => {
     const ct1 = contentType({
       key: 'ct1',
       baseType: '_page',
@@ -387,9 +379,11 @@ describe('createMultipleContentQuery() with damEnabled', () => {
 
     const query = await createMultipleContentQuery('ct1', true);
 
-    expect(query.includes('PublicImageAsset')).toBe(true);
-    expect(query.includes('PublicVideoAsset')).toBe(true);
-    expect(query.includes('PublicRawFileAsset')).toBe(true);
+    // CMP type fragments should NOT be in the main query
+    expect(query.includes('PublicImageAsset')).toBe(false);
+    expect(query.includes('PublicVideoAsset')).toBe(false);
+    expect(query.includes('PublicRawFileAsset')).toBe(false);
+    // ContentReferenceItem should be present
     expect(query.includes('ContentReferenceItem')).toBe(true);
   });
 });

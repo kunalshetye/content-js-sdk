@@ -162,7 +162,9 @@ function convertPropertyField(
   } else if (property.type === 'contentReference') {
     extraFragments.push(CONTENT_URL_FRAGMENT);
     const itemFragment = damEnabled ? ' ...ContentReferenceItem' : '';
-    fields.push(`${name} { key url { ...ContentUrl }${itemFragment} }`);
+    fields.push(
+      `${nameInFragment} { key url { ...ContentUrl }${itemFragment} }`,
+    );
     // Mark that contentReference type is used and based on damEnabled value, trigger DAM fragments to be included at root level
     includesDamAssetsFragments = damEnabled;
   } else if (property.type === 'array') {

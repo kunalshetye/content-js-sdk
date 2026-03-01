@@ -49,11 +49,12 @@ export function isBaseMediaType(key: string): key is MediaStringTypes {
 export const CONTENT_URL_FRAGMENT =
   'fragment ContentUrl on ContentUrl { type default hierarchical internal graph base }';
 
+// CMP types (cmp_PublicImageAsset etc.) do NOT implement _IContent, so inline
+// fragments on ContentReference.item cannot spread them.  The damResolver
+// utility handles resolution via a separate direct query instead.  We only
+// need `item { __typename }` so the resolver can detect unresolved DAM refs.
 export const DAM_ASSET_FRAGMENTS = [
-  'fragment PublicImageAsset on cmp_PublicImageAsset { Url Title AltText Description MimeType Height Width Renditions { Id Name Url Width Height } FocalPoint { X Y } Tags { Guid Name } }',
-  'fragment PublicVideoAsset on cmp_PublicVideoAsset { Url Title AltText Description MimeType Renditions { Id Name Url Width Height } Tags { Guid Name } }',
-  'fragment PublicRawFileAsset on cmp_PublicRawFileAsset { Url Title Description MimeType Tags { Guid Name } }',
-  'fragment ContentReferenceItem on ContentReference { item { __typename ...PublicImageAsset ...PublicVideoAsset ...PublicRawFileAsset } }',
+  'fragment ContentReferenceItem on ContentReference { item { __typename } }',
 ];
 
 const COMMON_FRAGMENTS = [

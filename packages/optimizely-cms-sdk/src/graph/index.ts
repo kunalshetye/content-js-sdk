@@ -16,6 +16,11 @@ import {
   GraphVariationInput,
   localeFilter,
 } from './filters.js';
+import {
+  findUnresolvedDamRefs,
+  buildDamResolutionQuery,
+  applyDamResolution,
+} from '../util/damResolver.js';
 
 /** Options for Graph */
 type GraphOptions = {
@@ -370,7 +375,13 @@ export class GraphClient {
     const query = createMultipleContentQuery(contentTypeName, damEnabled, formsEnabled);
     const response = (await this.request(query, input)) as ItemsResponse<T>;
 
-    return response?._Content?.items.map(removeTypePrefix);
+    const items = response?._Content?.items.map(removeTypePrefix);
+
+    if (damEnabled && items) {
+      await this.resolveDamAssets(items);
+    }
+
+    return items;
   }
 
   /**
@@ -456,9 +467,40 @@ export class GraphClient {
     const query = createSingleContentQuery(contentTypeName, damEnabled, formsEnabled);
     const response = await this.request(query, input, params.preview_token);
 
-    return decorateWithContext(
-      removeTypePrefix(response?._Content?.item),
-      params,
-    );
+    const item = removeTypePrefix(response?._Content?.item);
+
+    if (damEnabled && item) {
+      await this.resolveDamAssets(item, params.preview_token);
+    }
+
+    return decorateWithContext(item, params);
+  }
+
+  /**
+   * Resolves unresolved DAM assets by making a secondary query.
+   * When Content Graph returns DAM content references with `item.__typename === "Data"`,
+   * the actual asset data (Url, Renditions, etc.) is missing. This method detects those
+   * cases and queries the CMP types directly to get the full asset data.
+   */
+  private async resolveDamAssets(
+    data: unknown,
+    previewToken?: string,
+  ): Promise<void> {
+    const refs = findUnresolvedDamRefs(data);
+    if (refs.length === 0) return;
+
+    const queryInfo = buildDamResolutionQuery(refs);
+    if (!queryInfo) return;
+
+    try {
+      const result = await this.request(
+        queryInfo.query,
+        {},
+        previewToken,
+      );
+      applyDamResolution(result, queryInfo.aliasToRef);
+    } catch {
+      // DAM resolution is best-effort; don't fail the main request
+    }
   }
 }
