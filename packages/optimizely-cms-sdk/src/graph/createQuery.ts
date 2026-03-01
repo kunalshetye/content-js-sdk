@@ -178,6 +178,13 @@ function convertPropertyField(
     fields.push(...f.fields);
     extraFragments.push(...f.extraFragments);
     includesDamAssetsFragments = includesDamAssetsFragments || f.includesDamAssetsFragments;
+  } else if (
+    property.type === 'json' &&
+    'selection' in property &&
+    typeof property.selection === 'string'
+  ) {
+    // Structured JSON with known subfields (e.g. DependencyRules)
+    fields.push(`${nameInFragment} ${property.selection}`);
   } else {
     fields.push(nameInFragment);
   }

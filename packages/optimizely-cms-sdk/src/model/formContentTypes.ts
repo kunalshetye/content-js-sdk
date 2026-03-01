@@ -20,6 +20,11 @@ export const OptiFormsContainerDataContentType = contentType({
     SubmitConfirmationMessage: { type: 'string' },
     ResetConfirmationMessage: { type: 'string' },
     SubmitUrl: { type: 'url' },
+    DependencyRules: {
+      type: 'json',
+      selection:
+        '{ TargetElement SatisfiedAction ConditionCombination Conditions { DependsOnField ComparisonOperator ComparisonValue } }',
+    },
   },
 });
 

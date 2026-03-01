@@ -25,7 +25,7 @@ describe('createFragment() for form content types', () => {
         "fragment _IExperience on _IExperience { composition {...ICompositionNode }}",
         "fragment ICompositionNode on ICompositionNode { __typename key type nodeType layoutType displayName displayTemplateKey displaySettings {key value} ...on CompositionStructureNode { nodes @recursive } ...on CompositionComponentNode { nodeType component { ..._IComponent } } }",
         "fragment _IComponent on _IComponent { __typename  }",
-        "fragment OptiFormsContainerData on OptiFormsContainerData { __typename OptiFormsContainerData__Title:Title OptiFormsContainerData__Description:Description OptiFormsContainerData__ShowSummaryMessageAfterSubmission:ShowSummaryMessageAfterSubmission OptiFormsContainerData__SubmitConfirmationMessage:SubmitConfirmationMessage OptiFormsContainerData__ResetConfirmationMessage:ResetConfirmationMessage OptiFormsContainerData__SubmitUrl:SubmitUrl { ...ContentUrl } ..._IContent composition {...ICompositionNode} }",
+        "fragment OptiFormsContainerData on OptiFormsContainerData { __typename OptiFormsContainerData__Title:Title OptiFormsContainerData__Description:Description OptiFormsContainerData__ShowSummaryMessageAfterSubmission:ShowSummaryMessageAfterSubmission OptiFormsContainerData__SubmitConfirmationMessage:SubmitConfirmationMessage OptiFormsContainerData__ResetConfirmationMessage:ResetConfirmationMessage OptiFormsContainerData__SubmitUrl:SubmitUrl { ...ContentUrl } OptiFormsContainerData__DependencyRules:DependencyRules { TargetElement SatisfiedAction ConditionCombination Conditions { DependsOnField ComparisonOperator ComparisonValue } } ..._IContent composition {...ICompositionNode} }",
       ]
     `);
   });

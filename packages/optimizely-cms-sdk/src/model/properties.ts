@@ -60,7 +60,11 @@ export type StringProperty = BaseProperty & {
 
 export type BooleanProperty = BaseProperty & { type: 'boolean' };
 export type BinaryProperty = BaseProperty & { type: 'binary' };
-export type JsonProperty = BaseProperty & { type: 'json' };
+export type JsonProperty = BaseProperty & {
+  type: 'json';
+  /** GraphQL subfield selection for complex structured types (e.g. '{ Field1 Field2 Nested { Sub1 } }') */
+  selection?: string;
+};
 export type DateTimeProperty = BaseProperty & {
   type: 'dateTime';
   minimum?: string;
