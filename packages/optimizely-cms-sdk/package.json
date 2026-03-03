@@ -1,6 +1,6 @@
 {
   "name": "@kunalshetye/cms-sdk",
-  "version": "1.0.0-kunalshetye.2",
+  "version": "1.0.0-kunalshetye.5",
   "description": "JavaScript tools for integration with Optimizely CMS",
   "type": "module",
   "main": "./dist/index.js",

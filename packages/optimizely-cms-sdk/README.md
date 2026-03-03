@@ -14,25 +14,25 @@
 - **Forms feature detection** - Automatic introspection check that only includes form fragments when Forms is installed on the CMS instance
 - **All upstream features** - Everything from the official SDK is included
 
-For a complete reference, see the [Fork Features documentation](../../docs/14-fork-features.md).
+For a complete reference, see the [Fork Features documentation](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/docs/14-fork-features.md).
 
 ## Installation
 
 ```bash
-npm install @kunalshetye/cms-sdk@1.0.0-kunalshetye.1
+npm install @kunalshetye/cms-sdk@1.0.0-kunalshetye.5
 ```
 
 Or using other package managers:
 
 ```bash
 # pnpm
-pnpm add @kunalshetye/cms-sdk@1.0.0-kunalshetye.1
+pnpm add @kunalshetye/cms-sdk@1.0.0-kunalshetye.5
 
 # yarn
-yarn add @kunalshetye/cms-sdk@1.0.0-kunalshetye.1
+yarn add @kunalshetye/cms-sdk@1.0.0-kunalshetye.5
 
 # bun
-bun add @kunalshetye/cms-sdk@1.0.0-kunalshetye.1
+bun add @kunalshetye/cms-sdk@1.0.0-kunalshetye.5
 ```
 
 > [!NOTE]
@@ -45,7 +45,7 @@ If you have an existing codebase that imports from `@optimizely/cms-sdk` and don
 ```json
 {
   "dependencies": {
-    "@optimizely/cms-sdk": "npm:@kunalshetye/cms-sdk@1.0.0-kunalshetye.1"
+    "@optimizely/cms-sdk": "npm:@kunalshetye/cms-sdk@1.0.0-kunalshetye.5"
   }
 }
 ```
@@ -86,25 +86,26 @@ For comprehensive guides and documentation, visit the main repository:
 
 ### Getting Started
 
-- [Installation](../../docs/1-installation.md) - Set up your development environment
-- [Setup](../../docs/2-setup.md) - Configure the SDK and CLI
-- [Modelling](../../docs/3-modelling.md) - Define your content types with TypeScript
+- [Installation](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/docs/1-installation.md) - Set up your development environment
+- [Setup](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/docs/2-setup.md) - Configure the SDK and CLI
+- [Modelling](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/docs/3-modelling.md) - Define your content types with TypeScript
 
 ### Core Features
 
-- [Fetching Content](../../docs/5-fetching.md) - Query and retrieve content in your app
-- [Rendering (React)](../../docs/6-rendering-react.md) - Display content in React components
-- [Live Preview](../../docs/7-live-preview.md) - Enable real-time content editing
+- [Fetching Content](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/docs/5-fetching.md) - Query and retrieve content in your app
+- [Rendering (React)](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/docs/6-rendering-react.md) - Display content in React components
+- [Live Preview](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/docs/7-live-preview.md) - Enable real-time content editing
 
 ### Advanced Features
 
-- [Experience](../../docs/8-experience.md) - Work with experiences and variations
-- [Display Settings](../../docs/9-display-settings.md) - Configure content display options
-- [RichText Component (React)](../../docs/10-richtext-component-react.md) - Render rich text content
-- [DAM Assets](../../docs/11-dam-assets.md) - Manage digital assets
-- [Client Utils](../../docs/12-client-utils.md) - Utility functions and helpers
-- [Forms](../../docs/13-forms.md) - Working with Optimizely Forms
-- [Fork Features](../../docs/14-fork-features.md) - Complete reference of features unique to this fork
+- [Experience](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/docs/8-experience.md) - Work with experiences and variations
+- [Display Settings](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/docs/9-display-settings.md) - Configure content display options
+- [RichText Component (React)](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/docs/10-richtext-component-react.md) - Render rich text content
+- [DAM Assets](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/docs/11-dam-assets.md) - Manage digital assets
+- [Client Utils](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/docs/12-client-utils.md) - Utility functions and helpers
+- [Forms](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/docs/13-forms.md) - Working with Optimizely Forms
+- [Fork Features](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/docs/14-fork-features.md) - Complete reference of features unique to this fork
+- [Changelog](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/CHANGELOG.md) - Release history
 
 ## Keeping in sync with upstream
 
@@ -126,4 +127,4 @@ Apache License 2.0
 
 ---
 
-**Community fork maintained by [@kunalshetye](https://github.com/kunalshetye)** | [Documentation](../../docs/) | [Upstream](https://github.com/episerver/content-js-sdk)
+**Community fork maintained by [@kunalshetye](https://github.com/kunalshetye)** | [Documentation](https://github.com/kunalshetye/content-js-sdk/tree/npmjs/docs) | [Upstream](https://github.com/episerver/content-js-sdk)

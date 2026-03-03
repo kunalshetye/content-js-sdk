@@ -2,11 +2,11 @@
 
 # Optimizely CMS JavaScript Tools
 
-### The official JavaScript SDK for building headless applications with Optimizely CMS
+### A community fork of the Optimizely CMS JavaScript SDK
 
 [![Status](https://img.shields.io/badge/status-stable-green.svg)]()
-[![npm version - SDK](https://img.shields.io/npm/v/@optimizely/cms-sdk)](https://www.npmjs.com/package/@optimizely/cms-sdk)
-[![npm version - CLI](https://img.shields.io/npm/v/@optimizely/cms-cli)](https://www.npmjs.com/package/@optimizely/cms-cli)
+[![npm version - SDK](https://img.shields.io/npm/v/@kunalshetye/cms-sdk)](https://www.npmjs.com/package/@kunalshetye/cms-sdk)
+[![npm version - CLI](https://img.shields.io/npm/v/@kunalshetye/cms-cli)](https://www.npmjs.com/package/@kunalshetye/cms-cli)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 [Features](#features) • [Quick Start](#quick-start) • [Documentation](#documentation) • [Support](#support)
@@ -17,7 +17,7 @@
 
 ## Overview
 
-The official JavaScript SDK and CLI from Optimizely CMS. Build headless applications with a code-first approach, full TypeScript support, intelligent code completion, and an intuitive developer experience.
+A community-maintained fork of the Optimizely CMS JavaScript SDK and CLI. Build headless applications with a code-first approach, full TypeScript support, intelligent code completion, and an intuitive developer experience. Includes additional features like built-in Optimizely Forms support.
 
 ## What's Included
 
@@ -62,10 +62,10 @@ Get up and running in minutes:
 
 ```bash
 # Install the SDK
-npm install @optimizely/cms-sdk
+npm install @kunalshetye/cms-sdk
 
 # Install the CLI (for type syncing)
-npm install -D @optimizely/cms-cli
+npm install -D @kunalshetye/cms-cli
 ```
 
 For a complete walkthrough from scratch, see the [Documentation](#documentation) section below.
@@ -88,6 +88,9 @@ Comprehensive step-by-step guides to build your headless application:
 | 10   | [RichText Component (React)](./docs/10-richtext-component-react.md) | Render rich text content                  |
 | 11   | [DAM Assets](./docs/11-dam-assets.md)                               | Manage digital assets                     |
 | 12   | [Client Utils](./docs/12-client-utils.md)                           | Utility functions and helpers             |
+| 13   | [Forms](./docs/13-forms.md)                                         | Working with Optimizely Forms             |
+| 14   | [Fork Features](./docs/14-fork-features.md)                         | Features unique to this fork              |
+|      | [Changelog](./CHANGELOG.md)                                         | Release history                           |
 
 ## Community & Support
 
@@ -96,8 +99,8 @@ We're here to help you succeed with Optimizely CMS:
 ### 💬 Get Help
 
 - **Community Slack** - Join the [Optimizely Community Slack](https://optimizely-community.slack.com/archives/C0952JAST5J) for real-time discussions
-- **GitHub Issues** - Report bugs or request features on [GitHub](https://github.com/episerver/content-js-sdk/issues)
-- **Documentation** - Browse our [documentation and guides](https://docs.developers.optimizely.com/content-management-system/v1.0.0-CMS-SaaS/docs/install-javascript-sdk).
+- **GitHub Issues** - Report bugs or request features on [GitHub](https://github.com/kunalshetye/content-js-sdk/issues)
+- **Upstream Documentation** - Browse the [official Optimizely documentation](https://docs.developers.optimizely.com/content-management-system/v1.0.0-CMS-SaaS/docs/install-javascript-sdk).
 
 ### Contributing
 
@@ -111,8 +114,8 @@ This project is licensed under the Apache License 2.0.
 
 <div align="center">
 
-**Built by the Optimizely CMS Team**
+**Community fork maintained by [@kunalshetye](https://github.com/kunalshetye)** | [Upstream](https://github.com/episerver/content-js-sdk)
 
-[Website](https://www.optimizely.com/) • [Documentation](https://docs.developers.optimizely.com/content-management-system/v1.0.0-CMS-SaaS/docs/install-javascript-sdk) • [GitHub](https://github.com/episerver/content-js-sdk)
+[Website](https://www.optimizely.com/) • [Documentation](https://docs.developers.optimizely.com/content-management-system/v1.0.0-CMS-SaaS/docs/install-javascript-sdk) • [GitHub](https://github.com/kunalshetye/content-js-sdk)
 
 </div>

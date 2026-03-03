@@ -160,7 +160,7 @@ The CLI uses the production API endpoints by default (https://api.cms.optimizely
 OPTIMIZELY_CMS_API_URL=https://api.cmstest.optimizely.com
 ```
 
-[Read more about environment variables for the CLI](../packages/optimizely-cms-cli/docs/environmental-variables.md)
+[Read more about environment variables for the CLI](../packages/optimizely-cms-cli/README.md)
 
 ## Next steps
 

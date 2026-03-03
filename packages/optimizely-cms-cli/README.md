@@ -54,7 +54,7 @@ If you have an existing codebase that references `@optimizely/cms-cli`, you can 
 ```json
 {
   "devDependencies": {
-    "@optimizely/cms-cli": "npm:@kunalshetye/cms-cli@1.0.0-kunalshetye.1"
+    "@optimizely/cms-cli": "npm:@kunalshetye/cms-cli@1.0.0-kunalshetye.4"
   }
 }
 ```
@@ -221,14 +221,14 @@ For comprehensive guides and best practices:
 
 ### Getting Started
 
-- [Installation](../../docs/1-installation.md) - Set up your development environment
-- [Setup](../../docs/2-setup.md) - Configure the SDK and CLI
-- [Modelling](../../docs/3-modelling.md) - Define your content types with TypeScript
+- [Installation](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/docs/1-installation.md) - Set up your development environment
+- [Setup](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/docs/2-setup.md) - Configure the SDK and CLI
+- [Modelling](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/docs/3-modelling.md) - Define your content types with TypeScript
 
 ### Workflow Guides
 
-- [Create Content](../../docs/4-create-content.md) - Add content in Optimizely CMS after syncing types
-- [Fetching Content](../../docs/5-fetching.md) - Use the SDK to retrieve typed content
+- [Create Content](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/docs/4-create-content.md) - Add content in Optimizely CMS after syncing types
+- [Fetching Content](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/docs/5-fetching.md) - Use the SDK to retrieve typed content
 
 ## Best Practices
 
@@ -249,6 +249,8 @@ The typical workflow:
 
 For complete setup instructions, see the [main repository README](https://github.com/kunalshetye/content-js-sdk).
 
+- [Changelog](https://github.com/kunalshetye/content-js-sdk/blob/npmjs/CHANGELOG.md) - Release history
+
 ## Support
 
 - **Community Slack** - Join the [Optimizely Community Slack](https://optimizely-community.slack.com/archives/C0952JAST5J)
@@ -260,4 +262,4 @@ Apache License 2.0
 
 ---
 
-**Community fork maintained by [@kunalshetye](https://github.com/kunalshetye)** | [Documentation](../../docs/) | [Upstream](https://github.com/episerver/content-js-sdk)
+**Community fork maintained by [@kunalshetye](https://github.com/kunalshetye)** | [Documentation](https://github.com/kunalshetye/content-js-sdk/tree/npmjs/docs) | [Upstream](https://github.com/episerver/content-js-sdk)
